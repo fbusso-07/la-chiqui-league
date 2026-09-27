@@ -1,6 +1,6 @@
 # La Chiqui League
 
-Las estadísticas de la Liga Profesional argentina en figuritas: tu club, cada fecha con sus números y rankings, los mejores de cada rubro y por qué, "Era el gol de la fecha, Gamboa", todos los jugadores, las tablas con zonas de copas y descenso, y "Mi equipo": un juego a lo 7a0 para armar tu once abriendo sobres (con media o a ciegas) y jugar la Copa Chiqui contra equipos históricos del fútbol argentino.
+Las estadísticas de la Liga Profesional argentina en figuritas: tu club, cada fecha con sus números y rankings, los mejores de cada rubro y por qué, "Era el gol de la fecha, Gamboa", todos los jugadores, las tablas con zonas de copas y descenso, y la Copa Chiqui: un juego a lo 7a0 para armar tu once abriendo sobres, con figuritas de la Liga 2026 o con leyendas del fútbol argentino (con media o a ciegas), y jugar siete partidos transmitidos en vivo contra 41 equipos históricos.
 
 Sitio: https://fbusso-07.github.io/la-chiqui-league/
 
