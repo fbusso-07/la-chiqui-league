@@ -5,9 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>La Chiqui League: la Liga Profesional en figuritas y la Copa Chiqui</title>
 <meta name="description" content="La Liga Profesional 2026 en figuritas: tu club, cada fecha, los mejores y por qué, todos los jugadores y la tabla. Y la Copa Chiqui: armá tu once con figuritas de la Liga o con leyendas y ganá siete partidos seguidos.">
-<link rel="canonical" href="https://fbusso-07.github.io/la-chiqui-league/">
+<script>
+/* La dirección vieja (GitHub Pages) manda a la nueva y se lleva lo que el juego guardó en este navegador */
+(function () {
+  if (location.hostname !== 'fbusso-07.github.io') return;
+  var datos = {}, hay = false, resto = location.hash.replace(/^#/, '');
+  try { for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (/^chiqui-/.test(k)) { datos[k] = localStorage.getItem(k); hay = true; } } } catch (e) { hay = false; }
+  var hash = resto ? '#' + resto : '';
+  if (hay) {
+    try {
+      var cod = btoa(unescape(encodeURIComponent(JSON.stringify(datos)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+      if (cod.length < 60000) hash = '#mudanza=' + cod + (resto ? '~' + resto : '');
+    } catch (e) { /* sin mudanza */ }
+  }
+  location.replace('https://lachiquileague.pages.dev/' + location.search + hash);
+})();
+</script>
+<link rel="canonical" href="https://lachiquileague.pages.dev/">
 <meta name="theme-color" content="#17191E">
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" href="icono-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="icono-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -18,16 +36,16 @@
 <meta property="og:site_name" content="La Chiqui League">
 <meta property="og:title" content="La Chiqui League: la Liga Profesional en figuritas y la Copa Chiqui">
 <meta property="og:description" content="Armá tu once con figuritas de la Liga Profesional 2026 o con leyendas del fútbol argentino y jugá la Copa Chiqui. Y seguí tu club, cada fecha, los mejores y la tabla.">
-<meta property="og:url" content="https://fbusso-07.github.io/la-chiqui-league/">
-<meta property="og:image" content="https://fbusso-07.github.io/la-chiqui-league/compartir.png">
+<meta property="og:url" content="https://lachiquileague.pages.dev/">
+<meta property="og:image" content="https://lachiquileague.pages.dev/compartir.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="La Chiqui League: figuritas doradas y el juego Copa Chiqui">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="La Chiqui League: la Liga Profesional en figuritas y la Copa Chiqui">
 <meta name="twitter:description" content="Armá tu once con figuritas de la Liga Profesional 2026 o con leyendas del fútbol argentino y jugá la Copa Chiqui. Y seguí tu club, cada fecha, los mejores y la tabla.">
-<meta name="twitter:image" content="https://fbusso-07.github.io/la-chiqui-league/compartir.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"La Chiqui League","url":"https://fbusso-07.github.io/la-chiqui-league/","inLanguage":"es-AR","description":"La Liga Profesional argentina en figuritas: tu club, cada fecha, los mejores, los jugadores y la tabla."},{"@type":"VideoGame","name":"Copa Chiqui","url":"https://fbusso-07.github.io/la-chiqui-league/#jugar","inLanguage":"es-AR","genre":["Fútbol","Figuritas"],"gamePlatform":"Navegador web","applicationCategory":"Game","operatingSystem":"Cualquiera con navegador","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"ARS"},"description":"Armá tu once con figuritas de la Liga Profesional 2026 o con leyendas del fútbol argentino y jugá la Copa Chiqui. Y seguí tu club, cada fecha, los mejores y la tabla."}]}</script>
+<meta name="twitter:image" content="https://lachiquileague.pages.dev/compartir.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"La Chiqui League","url":"https://lachiquileague.pages.dev/","inLanguage":"es-AR","description":"La Liga Profesional argentina en figuritas: tu club, cada fecha, los mejores, los jugadores y la tabla."},{"@type":"VideoGame","name":"Copa Chiqui","url":"https://lachiquileague.pages.dev/#jugar","inLanguage":"es-AR","genre":["Fútbol","Figuritas"],"gamePlatform":"Navegador web","applicationCategory":"Game","operatingSystem":"Cualquiera con navegador","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"ARS"},"description":"Armá tu once con figuritas de la Liga Profesional 2026 o con leyendas del fútbol argentino y jugá la Copa Chiqui. Y seguí tu club, cada fecha, los mejores y la tabla."}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:ital,wdth,wght@0,50..150,100..900;1,50..150,100..900&family=Libre+Franklin:ital,wght@0,400..800;1,400..800&display=swap">
@@ -398,8 +416,9 @@ tr[data-zona="playoffs"] td { background: color-mix(in srgb, var(--zona-po) 6%, 
 /* ---------- Pie ---------- */
 .pie-sitio { background: var(--tinta); color: var(--papel-3); padding-block: 40px; }
 .pie-fila { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 32px; }
-.pie-marca { margin: 0; font-family: var(--display); font-style: italic; font-weight: 900; font-stretch: 150%; font-size: 1.25rem; line-height: 1; text-transform: uppercase; color: var(--oro-d); }
+.pie-marca { display: flex; align-items: center; gap: 12px; margin: 0; font-family: var(--display); font-style: italic; font-weight: 900; font-stretch: 150%; font-size: 1.25rem; line-height: 1; text-transform: uppercase; color: var(--oro-d); }
 .legal { margin: 0; max-width: 80ch; font-size: .8125rem; }
+.pie-escudo { width: 34px; height: 34px; flex: none; }
 .pie-link { color: var(--oro-d); font-size: .8125rem; font-weight: 700; text-underline-offset: 3px; }
 .pie-link:focus-visible { outline-color: var(--oro-d); }
 
@@ -1032,9 +1051,9 @@ button.slot { cursor: pointer; }
 
 <footer class="pie-sitio">
   <div class="contenedor pie-fila">
-    <p class="pie-marca">La Chiqui League</p>
+    <p class="pie-marca"><svg class="pie-escudo" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="oro-escudo" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF6D0"/><stop offset=".4" stop-color="#E2BC52"/><stop offset=".7" stop-color="#F7E08A"/><stop offset="1" stop-color="#B8892B"/></linearGradient></defs><path d="M32 5 L55 13 V31 C55 45 45 54 32 59 C19 54 9 45 9 31 V13 Z" fill="#17191E" stroke="url(#oro-escudo)" stroke-width="4" stroke-linejoin="round"/><path d="M32 15 l5.3 10.8 11.9 1.7-8.6 8.4 2 11.8L32 42.1l-10.6 5.6 2-11.8-8.6-8.4 11.9-1.7z" fill="url(#oro-escudo)"/></svg>La Chiqui League</p>
     <p class="legal" id="legal"></p>
-    <a class="pie-link" href="https://fbusso-07.github.io/la-chiqui-league/privacidad.html">Privacidad</a>
+    <a class="pie-link" href="https://lachiquileague.pages.dev/privacidad">Privacidad</a>
   </div>
 </footer>
 
@@ -1080,6 +1099,22 @@ button.slot { cursor: pointer; }
     } catch (e) { return null; }
     return null;
   };
+
+  // Mudanza desde la dirección vieja: lo que el juego guardó en ese navegador llega en el link, una sola vez
+  (() => {
+    const m = /^#mudanza=([A-Za-z0-9_-]+)(?:~(.*))?$/.exec(location.hash || '');
+    if (!m) return;
+    try {
+      const b = m[1].replace(/-/g, '+').replace(/_/g, '/');
+      const datos = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b + '='.repeat((4 - (b.length % 4)) % 4)), (ch) => ch.charCodeAt(0))));
+      const leer = (k) => { try { return JSON.parse(guardado(k) || 'null') || {}; } catch (e) { return {}; } };
+      const J = leer('chiqui-juego-2'), S = leer('chiqui-stats-2'), A = leer('chiqui-album');
+      // Solo si en este navegador todavía no se jugó: nunca pisa un juego que ya existe
+      const vacio = !J.libre && !J.diario && !S.pj && !S.copas && !Object.keys(A).length;
+      if (vacio && datos && typeof datos === 'object') Object.entries(datos).forEach(([k, v]) => { if (/^chiqui-/.test(k) && typeof v === 'string') guardado(k, v); });
+    } catch (e) { /* link roto: sigue sin mudanza */ }
+    try { history.replaceState(null, '', location.pathname + location.search + (m[2] ? '#' + m[2] : '#jugar')); } catch (e) { /* en algunos marcos no se puede */ }
+  })();
 
   let miClub = guardado('chiqui-club');
   if (miClub && !D.clubes[miClub]) miClub = null;
@@ -1522,7 +1557,7 @@ button.slot { cursor: pointer; }
   const FORM_TXT = { '4-3-3': 'Equilibrada, con dos extremos', '4-4-2': 'La clásica: dos líneas de cuatro', '4-2-3-1': 'Doble cinco y enganche', '4-3-1-2': 'El rombo, con enganche', '4-2-4': 'Todo al ataque', '3-5-2': 'Tres centrales y carrileros', '3-4-3': 'Ofensiva, con tres puntas', '5-3-2': 'Cerrada atrás, de contra' };
   const FUNCION = { 'DEF:LAT': 'Lateral', 'DEF:CEN': 'Defensor central', 'VOL:DEF': 'Volante central', 'VOL:CEN': 'Volante', 'VOL:OFE': 'Enganche', 'VOL:BAN': 'Volante por afuera', 'DEL:CEN': 'Centrodelantero', 'DEL:EXT': 'Extremo' };
   const funcion = (c) => (c.p === 'ARQ' ? 'Arquero' : FUNCION[c.p + ':' + c.d] || PUESTO_NOMBRE[c.p]);
-  const SITIO = 'https://fbusso-07.github.io/la-chiqui-league/';
+  const SITIO = 'https://lachiquileague.pages.dev/';
   const LOGROS = [
     ['debut', 'Debut', 'Jugá tu primer partido.'],
     ['campeon', 'Campeón', 'Ganá la Copa Chiqui.'],
@@ -2795,7 +2830,7 @@ button.slot { cursor: pointer; }
   // ---------- Cuenta (opcional, con Supabase): el juego en tu cuenta y el ranking del desafío del día ----------
   let sb = null, usuario = null, aplicandoNube = false, timerNube = null, estadoDeNube = '', rankingHoy = null;
   const CLAVE_SYNC_T = 'chiqui-sync-t';
-  const PRIVACIDAD = 'https://fbusso-07.github.io/la-chiqui-league/privacidad.html';
+  const PRIVACIDAD = 'https://lachiquileague.pages.dev/privacidad';
   const RANK_ETAPA = ['Grupo', 'Octavos', 'Cuartos', 'Semifinal', 'Final', 'Campeón'];
   const LOGO_G = '<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
   const hayLogin = () => Boolean(CFG.supabaseUrl && CFG.supabaseKey);
