@@ -1615,11 +1615,29 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
     const cuerpo = 'M31 10 L43 6 Q50 13 57 6 L69 10 L93 25 L83 43 L73 37 L73 94 L27 94 L27 37 L17 43 L7 25 Z';
     return `<svg class="camiseta" viewBox="0 0 100 100" ${titulo ? `role="img" aria-label="${esc(titulo)}"` : 'aria-hidden="true"'}><defs><clipPath id="${id}"><path d="${cuerpo}"/></clipPath><linearGradient id="${id}s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".28"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".2"/></linearGradient></defs><g clip-path="url(#${id})">${patron(cam, 6, 94)}<rect width="100" height="100" fill="url(#${id}s)"/></g><path d="${cuerpo}" fill="none" stroke="rgba(23,25,30,.55)" stroke-width="1.6" stroke-linejoin="round"/><path d="M43 6 Q50 13 57 6" fill="none" stroke="${cam.tipo === 'lisa' ? cam.c2 : 'rgba(23,25,30,.6)'}" stroke-width="2.6"/>${numero(cam, dorsal, 50, 64, 28)}</svg>`;
   }
-  function retrato(eq, dorsal) {
+  // El retrato: una silueta sin rasgos (no hay fotos con permiso y no se inventan caras, pelo ni tono de piel), con la
+  // camiseta titular del club, su escudo en el pecho y el dorsal real. Cada jugador gira apenas la cabeza (sale de su
+  // id) para que una fila de figuritas no parezca de clones; las leyendas llevan el cuello con cordones de antes.
+  const huella = (t) => { let h = 2166136261; for (const ch of String(t || '')) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
+  document.body.insertAdjacentHTML('afterbegin', `<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>${Object.entries(D.clubes).filter(([, c]) => c.escudo).map(([id, c]) => `<symbol id="esc-${id}" viewBox="0 0 64 64"><image href="${c.escudo}" width="64" height="64"/></symbol>`).join('')}</defs></svg>`);
+  function retrato(eq, dorsal, op = {}) {
     const cam = club(eq).camiseta || CAMISETA_GRIS;
-    const id = 'rt' + (++idSvg);
+    const id = 'rt' + (++idSvg), h = huella(op.id || `${eq}:${dorsal}`);
+    const giro = ((h % 9) - 4) * 0.9, corre = (((h >> 4) % 5) - 2) * 0.5;
     const torso = 'M4 110 C5 93 13 85 29 81 L41 76 Q50 84 59 76 L71 81 C87 85 95 93 96 110 Z';
-    return `<svg class="retrato" viewBox="0 0 100 110" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><defs><clipPath id="${id}"><path d="${torso}"/></clipPath><radialGradient id="${id}p" cx=".36" cy=".3" r=".8"><stop offset="0" stop-color="#555A66"/><stop offset="1" stop-color="#22252C"/></radialGradient><linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".3"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient></defs><path d="M42 58 L42 79 Q50 86 58 79 L58 58 Z" fill="url(#${id}p)"/><ellipse cx="35.4" cy="46" rx="2.6" ry="4.4" fill="#2C2F37"/><ellipse cx="64.6" cy="46" rx="2.6" ry="4.4" fill="#2C2F37"/><ellipse cx="50" cy="43" rx="14.6" ry="17.4" fill="url(#${id}p)"/><g clip-path="url(#${id})">${patron(cam, 76, 110)}<rect y="70" width="100" height="40" fill="url(#${id}s)"/></g><path d="${torso}" fill="none" stroke="rgba(23,25,30,.45)" stroke-width="1.2"/><path d="M41 76 Q50 84 59 76" fill="none" stroke="${cam.tipo === 'lisa' ? cam.c2 : 'rgba(23,25,30,.6)'}" stroke-width="2.4"/>${numero(cam, dorsal, 50, 103, 16)}</svg>`;
+    const cuelloPath = 'M42 62 L42 79 Q50 86 58 79 L58 62 Z';
+    const lisa = cam.tipo === 'lisa', vivo = lisa ? cam.c2 : 'rgba(23,25,30,.55)';
+    let cuello;
+    if (op.retro) {
+      const banda = lisa ? cam.c2 : '#FFFFFF';
+      cuello = `<path d="M40 76 Q50 86 60 76" fill="none" stroke="${banda}" stroke-width="3.6"/><path d="M50 83 L50 92" stroke="#22252C" stroke-width="2.2" stroke-linecap="round"/><path d="M48.3 85 L51.7 86.8 M51.7 85 L48.3 86.8 M48.3 88.4 L51.7 90.2 M51.7 88.4 L48.3 90.2" stroke="#FFFFFF" stroke-width=".7" stroke-linecap="round"/>`;
+    } else if (cam.tipo === 'v') cuello = `<path d="M41 76 L50 88 L59 76" fill="none" stroke="${vivo}" stroke-width="2.4" stroke-linejoin="round"/>`;
+    else cuello = `<path d="M41 76 Q50 84 59 76" fill="none" stroke="${vivo}" stroke-width="2.4"/>`;
+    const costuras = `<path d="M31 81 Q27 94 26 110 M69 81 Q73 94 74 110" fill="none" stroke="${lisa ? cam.c2 : 'rgba(23,25,30,.28)'}" stroke-width="${lisa ? 1.6 : 1.1}"/>`;
+    const escudoPecho = !op.retro && club(eq).escudo ? `<use href="#esc-${eq}" x="60" y="84" width="9" height="9"/>` : '';
+    return `<svg class="retrato" viewBox="0 0 100 110" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><defs><clipPath id="${id}"><path d="${torso}"/></clipPath><clipPath id="${id}n"><path d="${cuelloPath}"/></clipPath><radialGradient id="${id}p" cx=".36" cy=".3" r=".8"><stop offset="0" stop-color="#555A66"/><stop offset="1" stop-color="#22252C"/></radialGradient><linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".3"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient><pattern id="${id}t" width="2.6" height="2.6" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r=".5" fill="rgba(255,255,255,.13)"/></pattern></defs>`
+      + `<g transform="translate(${corre} 0) rotate(${giro.toFixed(1)} 50 74)"><path d="${cuelloPath}" fill="url(#${id}p)"/><ellipse cx="50" cy="66" rx="9" ry="3.4" fill="rgba(0,0,0,.3)" clip-path="url(#${id}n)"/><ellipse cx="35.4" cy="50" rx="2.6" ry="4.4" fill="#22252C"/><ellipse cx="64.6" cy="50" rx="2.6" ry="4.4" fill="#22252C"/><ellipse cx="50" cy="47" rx="14.6" ry="17.4" fill="url(#${id}p)"/><ellipse cx="50" cy="47" rx="14.6" ry="17.4" fill="url(#${id}t)"/><path d="M38.2 38 Q36.6 50 42.6 60.5" fill="none" stroke="rgba(255,255,255,.26)" stroke-width="1.6" stroke-linecap="round"/></g>`
+      + `<g clip-path="url(#${id})">${patron(cam, 76, 110)}${costuras}<ellipse cx="29" cy="87" rx="15" ry="6" fill="rgba(255,255,255,.12)"/><rect y="70" width="100" height="40" fill="url(#${id}s)"/></g><path d="${torso}" fill="none" stroke="rgba(23,25,30,.45)" stroke-width="1.2"/>${cuello}${escudoPecho}${numero(cam, dorsal, 50, 103, 16)}</svg>`;
   }
   function partirNombre(nombre) { const p = String(nombre).split(' '); return p.length < 2 ? ['', nombre] : [p[0], p.slice(1).join(' ')]; }
   function figu(p, valor, unidad, i, clase = '') {
@@ -1629,7 +1647,7 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
     const dorsal = p.dor || DORSAL[p.id] || '';
     const largo = String(valor).length >= 3 ? ' figu-dato--largo' : '';
     if (!/figu--/.test(clase) && BRILLA.has(String(p.id))) clase += ' figu--brillo';
-    return `<span class="figu t-${TINTA[puesto] || 'tinta'} ${clase}" aria-hidden="true" style="--rot:${GIRO[i % GIRO.length]}deg"><span class="figu-in"><span class="figu-club">${club(eq).escudo ? `<img src="${club(eq).escudo}" alt="">` : ''}<span>${esc(club(eq).nombre)}</span></span><span class="figu-foto">${retrato(eq, dorsal)}<span class="figu-dato${largo}"><b>${esc(valor)}</b>${unidad ? `<small>${esc(unidad)}</small>` : ''}</span>${puesto ? `<span class="figu-pos">${esc(puesto)}</span>` : ''}</span><span class="figu-nombre"><small>${esc(pila)}</small><b>${esc(apellido)}</b></span></span></span>`;
+    return `<span class="figu t-${TINTA[puesto] || 'tinta'} ${clase}" aria-hidden="true" style="--rot:${GIRO[i % GIRO.length]}deg"><span class="figu-in"><span class="figu-club">${club(eq).escudo ? `<img src="${club(eq).escudo}" alt="">` : ''}<span>${esc(club(eq).nombre)}</span></span><span class="figu-foto">${retrato(eq, dorsal, { id: p.id, retro: String(p.id || '').startsWith('L-') })}<span class="figu-dato${largo}"><b>${esc(valor)}</b>${unidad ? `<small>${esc(unidad)}</small>` : ''}</span>${puesto ? `<span class="figu-pos">${esc(puesto)}</span>` : ''}</span><span class="figu-nombre"><small>${esc(pila)}</small><b>${esc(apellido)}</b></span></span></span>`;
   }
   // Inclinación de la figurita con el mouse (no en pantallas táctiles ni con movimiento reducido)
   if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
