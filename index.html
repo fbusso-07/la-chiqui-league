@@ -839,6 +839,13 @@ main > .seccion[hidden] { display: none; }
 .subnav a { flex: none; padding: 8px 14px; border-radius: 999px; background: var(--papel-2); color: var(--tinta-2); text-decoration: none; font-family: var(--display); font-weight: 800; font-stretch: 86%; font-size: .875rem; }
 .subnav a[aria-current="page"] { background: var(--tinta); color: var(--papel); }
 @media (hover: hover) and (pointer: fine) { .subnav a:not([aria-current="page"]):hover { background: var(--papel-3); color: var(--tinta); } }
+/* Los dos juegos, como dos pestañas del mismo tamaño; ¿Quién es? lleva un punto mientras no lo jugaste hoy */
+.subnav--juegos { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; max-width: 560px; padding: 4px; border-radius: 12px; background: var(--papel-2); overflow: visible; }
+.subnav--juegos a { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 12px 10px; border-radius: 10px; background: var(--papel); font-size: 1rem; }
+.punto-aviso { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--rojo); flex: none; }
+.punto-aviso[hidden] { display: none; }
+.indice a.indice-jugar { position: relative; }
+.indice a .punto-aviso { position: absolute; top: 6px; right: 4px; box-shadow: 0 0 0 2px var(--tinta); }
 
 /* ---------- Inicio ---------- */
 .ini-hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px clamp(20px, 3vw, 40px); align-items: center; padding: 28px; border-radius: 16px; background: var(--figu); box-shadow: inset 0 0 0 2px var(--papel-2); }
@@ -1146,6 +1153,7 @@ td .enlace { display: inline-flex; align-items: center; gap: 7px; }
   .indice a[aria-current="page"] { background: transparent; color: #FFFFFF; box-shadow: inset 0 3px 0 var(--oro-c); }
   .hoja .ficha-barra { padding-top: calc(6px + env(safe-area-inset-top, 0px)); }
   .indice a.indice-jugar[aria-current="page"] { background: transparent; color: var(--oro-d); }
+  .indice a .punto-aviso { right: auto; left: calc(50% + 8px); top: 6px; }
   body { padding-bottom: calc(62px + env(safe-area-inset-bottom, 0px)); }
   .hoja { width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0; border-radius: 0; }
   .hoja[open] { animation-name: subir-mas; }
@@ -1319,7 +1327,7 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
       <ul>
         <li><a href="#inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3.5 10.5 12 3.5l8.5 7V20.5h-5.5v-6h-6v6H3.5z"/></svg>Inicio</a></li>
         <li><a href="#fecha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Partidos</a></li>
-        <li><a href="#jugar" class="indice-jugar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg>Jugar</a></li>
+        <li><a href="#jugar" class="indice-jugar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg>Jugar<span class="punto-aviso" data-aviso-quien hidden aria-hidden="true"></span><span class="sr-only" data-aviso-quien hidden>(¿Quién es? sin jugar hoy)</span></a></li>
         <li><a href="#tabla"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M4 6.5h16M4 12h16M4 17.5h16"/><path d="M7.5 4v16" stroke-width="1.4"/></svg>Tabla</a></li>
         <li><a href="#mejores"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M5.5 20v-8M12 20V5M18.5 20v-5"/></svg>Jugadores</a></li>
         <li><a href="#club"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M12 3.2 19.5 6v6c0 4.5-3.2 7.6-7.5 8.8C7.7 19.6 4.5 16.5 4.5 12V6z"/></svg>Clubes</a></li>
@@ -1342,7 +1350,7 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
             <input class="campo" id="busca" type="search" placeholder="Buscá un jugador o un club" autocomplete="off">
             <ul class="busca-res" id="busca-res" hidden></ul>
           </div>
-          <a class="promo-juego" href="#jugar"><span class="promo-estrella" aria-hidden="true">★</span><span class="promo-txt"><b>Jugá la Copa Chiqui</b><span>Armá tu once con figuritas de la Liga o con leyendas y ganá siete partidos seguidos.</span></span><span class="promo-ir" aria-hidden="true">Jugar</span></a>
+          <a class="promo-juego" id="promo-juego" href="#jugar"><span class="promo-estrella" aria-hidden="true">★</span><span class="promo-txt"><b>Jugá la Copa Chiqui</b><span>Armá tu once con figuritas de la Liga o con leyendas y ganá siete partidos seguidos.</span></span><span class="promo-ir" aria-hidden="true">Jugar</span></a>
         </div>
         <div class="tapa-album" aria-hidden="true"><div class="abanico" id="abanico"></div><span class="sello" id="sello"></span></div>
       </div>
@@ -1486,7 +1494,7 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
 
   <section class="seccion seccion--juego" id="jugar" aria-labelledby="jugar-t">
     <div class="contenedor">
-      <nav class="subnav" aria-label="Juegos"><a href="#jugar">Copa Chiqui</a><a href="#quien">¿Quién es?</a></nav>
+      <nav class="subnav subnav--juegos" aria-label="Juegos"><a href="#jugar">Copa Chiqui</a><a href="#quien">¿Quién es?<span class="punto-aviso" data-aviso-quien hidden aria-hidden="true"></span><span class="sr-only" data-aviso-quien hidden>(sin jugar hoy)</span></a></nav>
       <div class="seccion-cab"><div>
         <h2 class="seccion-t" id="jugar-t"><span class="estrella-t" aria-hidden="true">★</span> Copa Chiqui</h2>
         <p class="seccion-sub">Armá tu once abriendo sobres y ganá siete partidos seguidos contra equipos históricos.</p>
@@ -1498,7 +1506,7 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
   </section>
   <section class="seccion" id="quien" aria-labelledby="quien-t">
     <div class="contenedor">
-      <nav class="subnav" aria-label="Juegos"><a href="#jugar">Copa Chiqui</a><a href="#quien">¿Quién es?</a></nav>
+      <nav class="subnav subnav--juegos" aria-label="Juegos"><a href="#jugar">Copa Chiqui</a><a href="#quien">¿Quién es?<span class="punto-aviso" data-aviso-quien hidden aria-hidden="true"></span><span class="sr-only" data-aviso-quien hidden>(sin jugar hoy)</span></a></nav>
       <div class="seccion-cab"><div>
         <h2 class="seccion-t" id="quien-t">¿Quién es?</h2>
         <p class="seccion-sub">Un jugador de la Liga por día. Tenés ocho intentos.</p>
@@ -2531,7 +2539,14 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
     $('#ini-tabla').innerHTML = miniTabla();
     $('#ini-club').innerHTML = htmlTuClub();
     const hecho = (quienEstado().dias || {})[hoyAR()];
-    $('#ini-juegos').innerHTML = cajaCab('Jugá', '', '') + `<div class="juegos-ini"><a class="juego-ini" href="#jugar"><b>★ Copa Chiqui</b><span>Armá tu once abriendo sobres y ganá siete partidos.</span></a><a class="juego-ini" href="#quien"><b>¿Quién es?</b><span>${hecho && hecho.fin ? (hecho.gano ? `Hoy lo sacaste en ${plural(hecho.g.length, 'intento', 'intentos')}.` : 'Hoy no salió: mañana hay otro.') : 'El jugador del día, en ocho intentos.'}</span></a></div>`;
+    // El aviso grande lleva a ¿Quién es? mientras no lo jugaste hoy; después, a la Copa
+    const promo = $('#promo-juego'), quienHoy = !(hecho && hecho.fin);
+    if (promo) {
+      promo.setAttribute('href', quienHoy ? '#quien' : '#jugar');
+      promo.querySelector('.promo-estrella').textContent = quienHoy ? '?' : '★';
+      promo.querySelector('.promo-txt').innerHTML = quienHoy ? '<b>¿Quién es? · el jugador de hoy</b><span>Un jugador de la Liga por día: adivinalo en ocho intentos.</span>' : '<b>Jugá la Copa Chiqui</b><span>Armá tu once con figuritas de la Liga o con leyendas y ganá siete partidos seguidos.</span>';
+    }
+    $('#ini-juegos').innerHTML = cajaCab('Jugá', '', '') + `<div class="juegos-ini"><a class="juego-ini" href="#jugar"><b>Copa Chiqui</b><span>Armá tu once abriendo sobres y ganá siete partidos.</span></a><a class="juego-ini" href="#quien"><b>¿Quién es?</b><span>${hecho && hecho.fin ? (hecho.gano ? `Hoy lo sacaste en ${plural(hecho.g.length, 'intento', 'intentos')}.` : 'Hoy no salió: mañana hay otro.') : 'El jugador del día, en ocho intentos.'}</span></a></div>`;
     const N = numerosTorneo(periodo);
     $('#ini-torneo').innerHTML = N.pj ? cajaCab('El torneo', P.nombre, '#tabla', 'Más números') + `<dl class="tiles tiles--chicas"><div><dt>Goles</dt><dd>${N.goles}</dd><small>${coma(N.goles / N.pj, 2)} por partido</small></div><div><dt>Ganó el local</dt><dd>${pct(N.loc / N.pj)}</dd></div><div><dt>Empates</dt><dd>${pct(N.emp / N.pj)}</dd></div><div><dt>Rojas</dt><dd>${N.ro}</dd></div></dl>` : '';
   }
@@ -2565,6 +2580,7 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
       const g = GRUPO_VISTA[id] || id;
       $$('.indice a').forEach((a) => { if (a.getAttribute('href') === '#' + g) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
       $$('.subnav a').forEach((a) => { if (a.getAttribute('href') === '#' + id) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+      avisoQuien();
       if (id === 'inicio') pintarInicio();
     }
     if (arriba) scrollTo(0, 0);
@@ -4415,6 +4431,12 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
   function quienGuardar(Q, p) {
     if (quienModo === 'dia') Q.dias[hoyAR()] = p; else Q.libre = p;
     guardado(CLAVE_QUIEN, JSON.stringify(Q));
+    avisoQuien();
+  }
+  // Punto en la pestaña Jugar y en la de ¿Quién es? mientras el jugador de hoy no está terminado
+  function avisoQuien() {
+    const h = quienEstado().dias[hoyAR()];
+    $$('[data-aviso-quien]').forEach((x) => { x.hidden = !!(h && h.fin); });
   }
   // Cómo se compara un intento con el secreto: 'si' coincide, 'cerca' está a un paso, 'no' lejos; la flecha dice hacia dónde
   function quienComparar(g, s) {
