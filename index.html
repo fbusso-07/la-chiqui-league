@@ -475,6 +475,9 @@ tr[data-zona="playoffs"] td { background: color-mix(in srgb, var(--zona-po) 6%, 
 .diario { position: relative; overflow: hidden; display: grid; gap: 8px; padding: 18px; border-radius: 16px; background: var(--tinta); color: var(--papel); }
 .diario h3 { margin: 0; display: flex; align-items: center; gap: 8px; font-family: var(--display); font-style: italic; font-weight: 900; font-stretch: 120%; font-size: 1.25rem; text-transform: uppercase; color: var(--oro-d); }
 .diario p { margin: 0; font-size: .9375rem; color: var(--papel-3); }
+.racha-dias { margin: 0; font-size: .875rem; }
+.racha-dias b { font-family: var(--display); font-weight: 900; font-size: 1rem; }
+.diario .racha-dias { font-size: .875rem; color: var(--oro-d); }
 .diario .boton { justify-self: start; }
 .cal { display: inline-grid; place-items: center; width: 30px; height: 32px; border-radius: 6px; background: var(--papel); color: var(--tinta); font-family: var(--display); font-style: normal; font-weight: 900; font-size: .9375rem; box-shadow: inset 0 6px 0 var(--rojo); padding-top: 5px; }
 .numeros { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
@@ -2981,7 +2984,7 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
       </div>
       <div class="hub-lado">
         ${htmlInstalar()}
-        <div class="diario"><h3><span class="cal" aria-hidden="true">${esc(String(Number(hoy.slice(8))))}</span>Desafío del día</h3>${diario}${htmlRanking()}</div>
+        <div class="diario"><h3><span class="cal" aria-hidden="true">${esc(String(Number(hoy.slice(8))))}</span>Desafío del día</h3>${diario}${rachaHtml()}${htmlRanking()}</div>
         <ul class="numeros" aria-label="Tus números"><li><b>${S.copas}</b><span>copas</span></li><li><b>${S.titulos}</b><span>${S.titulos === 1 ? 'título' : 'títulos'}</span></li><li><b>${S.pj}</b><span>partidos</span></li><li><b>${conseguidos}/${LOGROS.length}</b><span>logros</span></li></ul>
         ${htmlAlbumResumen()}
         ${htmlVitrina()}
@@ -3161,7 +3164,7 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
     const gf = copa.partidos.reduce((s, p) => s + p.gl, 0), gc = copa.partidos.reduce((s, p) => s + p.gv, 0);
     const titulo = j.fecha ? `Desafío del ${diaMes(tsDeDia(j.fecha))}` : `${MODO_NOMBRE[eq.modo]}${eq.ciegas ? ', a ciegas' : ''}${eq.dificultad && eq.dificultad !== 'normal' ? ', ' + DIFICULTAD[eq.dificultad].n.toLowerCase() : ''}`;
     const res = copa.final.etapa === 5 ? '🏆 ¡Campeón!' : LLEGO[copa.final.etapa];
-    return `La Chiqui League · Copa Chiqui ★\n${nombreEquipo()} (${titulo}): ${res}\n${cuadros.slice(0, 3).join('')} ${cuadros.slice(3).join('')}\n${gf} goles a favor y ${gc} en contra\n${SITIO}#jugar`;
+    return `La Chiqui League · Copa Chiqui ★\n${nombreEquipo()} (${titulo}): ${res}\n${cuadros.slice(0, 3).join('')} ${cuadros.slice(3).join('')}\n${gf} goles a favor y ${gc} en contra\n${j.fecha ? rachaCompartir() : ''}${SITIO}#jugar`;
   }
   async function compartirTexto(texto, okTxt) {
     try {
@@ -4438,6 +4441,28 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
     const h = quienEstado().dias[hoyAR()];
     $$('[data-aviso-quien]').forEach((x) => { x.hidden = !!(h && h.fin); });
   }
+  // Racha de días, como en Wordle: el día cuenta si terminaste el desafío de la Copa o jugaste ¿Quién es? (días de Argentina)
+  function diaAntes(dia) { const t = new Date(dia + 'T12:00:00Z'); t.setUTCDate(t.getUTCDate() - 1); return t.toISOString().slice(0, 10); }
+  function rachaDias() {
+    const hist = leerJSON(CLAVE_DIARIOS, {}), Q = quienEstado().dias, hoy = hoyAR();
+    const quien = Object.keys(Q).filter((d) => { const x = Q[d]; return x && (x.fin || x.gano || (Array.isArray(x.g) && x.g.length >= QUIEN_MAX)); });
+    const dias = new Set([...Object.keys(hist), ...quien].filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d) && d <= hoy));
+    let d = dias.has(hoy) ? hoy : diaAntes(hoy), actual = 0;
+    while (dias.has(d)) { actual++; d = diaAntes(d); }
+    let mejor = 0, seguidos = 0, previo = null;
+    for (const x of [...dias].sort()) { seguidos = previo && diaAntes(x) === previo ? seguidos + 1 : 1; mejor = Math.max(mejor, seguidos); previo = x; }
+    return { actual, mejor, hoy: dias.has(hoy) };
+  }
+  function rachaHtml() {
+    const r = rachaDias();
+    let t = '';
+    if (r.hoy && r.actual >= 2) t = `<b>${num(r.actual)}</b> días seguidos en la Chiqui${r.mejor > r.actual ? ` · tu mejor: ${num(r.mejor)}` : ''}`;
+    else if (r.hoy) t = r.mejor > 1 ? `Arrancás una racha nueva · tu mejor: ${plural(r.mejor, 'día', 'días')}` : 'Primer día de tu racha: volvé mañana para sumar otro';
+    else if (r.actual >= 2) t = `Venís <b>${num(r.actual)}</b> días seguidos: jugá hoy para no cortar la racha`;
+    else if (r.actual) t = 'Ayer jugaste: jugá hoy y ya son dos días seguidos';
+    return t ? `<p class="racha-dias">${t}</p>` : '';
+  }
+  const rachaCompartir = () => { const r = rachaDias(); return r.hoy && r.actual >= 2 ? `🔥 ${r.actual} días seguidos\n` : ''; };
   // Cómo se compara un intento con el secreto: 'si' coincide, 'cerca' está a un paso, 'no' lejos; la flecha dice hacia dónde
   function quienComparar(g, s) {
     const num = (a, b, cerca) => ({ v: a, k: a === b ? 'si' : Math.abs(a - b) <= cerca ? 'cerca' : 'no', f: a === b ? '' : a < b ? '▲' : '▼' });
@@ -4456,7 +4481,7 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
   function quienTexto(p, s, dia) {
     const cuadros = p.g.map((id) => quienComparar(cartaPor[id], s).map((x) => ({ si: '🟩', cerca: '🟨', no: '⬜' })[x.k]).join('')).join('\n');
     const gano = p.g.includes(s.id);
-    return `¿Quién es? ${dia ? '#' + quienNumero(dia) : '(práctica)'} ${gano ? p.g.length : 'X'}/${QUIEN_MAX}\n${cuadros}\n${SITIO}#quien`;
+    return `¿Quién es? ${dia ? '#' + quienNumero(dia) : '(práctica)'} ${gano ? p.g.length : 'X'}/${QUIEN_MAX}\n${cuadros}\n${dia ? rachaCompartir() : ''}${SITIO}#quien`;
   }
   function pintarQuien(enfocar) {
     const caja = $('#quien-juego');
@@ -4477,7 +4502,7 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
       abajo = `<div class="quien-buscar busca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg><label class="sr-only" for="quien-input">Escribí un jugador de la Liga</label><input class="campo" id="quien-input" type="search" placeholder="Escribí un jugador de la Liga" autocomplete="off"><ul class="busca-res" id="quien-sug" hidden></ul></div>
         <p class="dato-chico">Intento ${p.g.length + 1} de ${QUIEN_MAX}. <span class="q-ley q-si"></span> coincide <span class="q-ley q-cerca"></span> cerca · ▲ el secreto tiene más · ▼ tiene menos.</p>`;
     }
-    caja.innerHTML = `<div class="quien-cab">${segmento('Modo', 'quien-modo', quienModo, [['dia', `Del día${dia ? ' #' + quienNumero(dia) : ''}`], ['libre', 'Práctica']])}${quienModo === 'dia' && jugados ? `<p class="dato-chico">Adivinaste ${ganados} de ${plural(jugados, 'día', 'días')}.</p>` : ''}</div>${pistas}${abajo}`;
+    caja.innerHTML = `<div class="quien-cab">${segmento('Modo', 'quien-modo', quienModo, [['dia', `Del día${dia ? ' #' + quienNumero(dia) : ''}`], ['libre', 'Práctica']])}${quienModo === 'dia' && jugados ? `<p class="dato-chico">Adivinaste ${ganados} de ${plural(jugados, 'día', 'días')}.</p>` : ''}${quienModo === 'dia' ? rachaHtml() : ''}</div>${pistas}${abajo}`;
     if (enfocar) (fin ? $('#quien-foco') : $('#quien-input'))?.focus({ preventScroll: true });
   }
   function quienIntento(id) {
