@@ -1521,7 +1521,7 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
 </main>
 
 <dialog class="hoja" id="ficha" aria-labelledby="ficha-t">
-  <div class="ficha-barra"><button type="button" id="ficha-atras" data-ficha="atras" aria-label="Volver" hidden>←</button><p class="ficha-tipo" id="ficha-tipo"></p><button type="button" data-ficha="cerrar" aria-label="Cerrar">✕</button></div>
+  <div class="ficha-barra"><button type="button" id="ficha-atras" data-ficha="atras" aria-label="Volver" hidden>←</button><p class="ficha-tipo" id="ficha-tipo"></p><button type="button" data-ficha="compartir" aria-label="Compartir esta ficha"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3m0 0L7.5 7.5M12 3l4.5 4.5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button><button type="button" data-ficha="cerrar" aria-label="Cerrar">✕</button></div>
   <div class="ficha-cuerpo" id="ficha-cuerpo"></div>
 </dialog>
 
@@ -2150,12 +2150,53 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
     if (!b || !dlgF.contains(b)) return;
     const x = pilaF[pilaF.length - 1];
     if (b.dataset.ficha === 'cerrar') dlgF.close();
+    else if (b.dataset.ficha === 'compartir' && x) compartirTexto(`${datoFicha(x)}\n${linkFicha(x)}`, 'Link copiado. Pegalo en tu grupo.');
     else if (b.dataset.ficha === 'atras') { pilaF.pop(); pintarF(true); $('#ficha-t')?.focus({ preventScroll: true }); }
     else if (x && b.dataset.fichaTab) { x.tab = b.dataset.fichaTab; pintarF(false); dlgF.querySelector(`[data-ficha-tab="${x.tab}"]`)?.focus(); }
     else if (x && b.dataset.fichaPer) { x.per = b.dataset.fichaPer; pintarF(false); dlgF.querySelector(`[data-ficha-per="${x.per}"]`)?.focus(); }
     else if (b.dataset.seguir) { elegirClub(miClub === b.dataset.seguir ? null : b.dataset.seguir); pintarF(false); dlgF.querySelector('[data-seguir]')?.focus(); }
   });
   dlgF.addEventListener('change', (e) => { if (e.target.matches('[data-tl-cambios]')) $('#ficha-cuerpo .tl-lista')?.classList.toggle('sin-cambios', !e.target.checked); });
+  // Compartir una ficha: el dato más fuerte en una línea y el link que la abre (#jugador=, #club=, #partido=)
+  const LINK_F = { jug: 'jugador', club: 'club', partido: 'partido' };
+  const linkFicha = (x) => `${SITIO}#${LINK_F[x.t]}=${encodeURIComponent(x.id)}`;
+  function datoFicha(x) {
+    if (x.t === 'jug') {
+      const f = filaPor[x.id], per = x.per || periodo, cuando = per === 'anio' ? 'en el año' : 'en el Clausura', nom = nombreJ(x.id);
+      const v = (k) => (f && f[per] ? f[per][idx[k]] || 0 : 0);
+      let mejor = null;
+      for (const [k, u1, u] of [['goles', 'gol', 'goles'], ['asist', 'asistencia', 'asistencias'], ['atajadas', 'atajada', 'atajadas'], ['vallas', 'valla invicta', 'vallas invictas']]) {
+        const r = v(k) ? rankLiga(per, x.id, k) : null;
+        if (r && (!mejor || r < mejor.r)) mejor = { k, r, u1, u };
+      }
+      if (mejor) return `${nom}: ${plural(v(mejor.k), mejor.u1, mejor.u)} ${cuando}${mejor.r <= 20 ? `, ${mejor.r}.º de la Liga` : ''}`;
+      return v('pj') ? `${nom}: ${plural(v('pj'), 'partido', 'partidos')} ${cuando}` : nom;
+    }
+    if (x.t === 'club') {
+      const c = club(x.id);
+      for (const [k, n] of [['clausura_a', 'la Zona A'], ['clausura_b', 'la Zona B'], ['anual', 'la tabla anual']]) {
+        const t = D.tablas.find((q) => q.clave === k), i = t ? t.filas.findIndex((f) => String(f.eq) === String(x.id)) : -1;
+        if (i >= 0) return `${c.nombre}: ${i + 1}.º en ${n} con ${plural(t.filas[i].pts, 'punto', 'puntos')} en ${plural(t.filas[i].pj, 'partido', 'partidos')}`;
+      }
+      return c.nombre;
+    }
+    const p = partidoPor[x.id];
+    if (!p) return 'La Chiqui League';
+    const n = nombreFecha(p.clave);
+    return p.estado === 'finished' ? `${club(p.l).nombre} ${p.gl}-${p.gv} ${club(p.v).nombre} · ${n.corto} · ${n.fase}` : `${club(p.l).nombre} contra ${club(p.v).nombre} · ${n.corto}${p.inicio ? ` · ${diaCorto(p.inicio)} ${hora(p.inicio)}` : ''}`;
+  }
+  // Un link a una ficha la abre encima de la página (al cargar o si cambia la dirección); la dirección vuelve a la sección
+  function abrirDesdeLink() {
+    const m = /^#(jugador|club|partido)=([^&~/?]+)$/.exec(location.hash || '');
+    if (!m) return false;
+    const t = { jugador: 'jug', club: 'club', partido: 'partido' }[m[1]];
+    let id;
+    try { id = decodeURIComponent(m[2]); } catch (e) { return false; }
+    const existe = t === 'jug' ? filaPor[id] || cartaPor[id] : t === 'club' ? club(id).nombre : partidoPor[id];
+    try { history.replaceState(null, '', location.pathname + location.search + (t === 'club' ? '#club' : '#inicio')); } catch (e) { /* marco sin historial */ }
+    if (existe) abrirF({ t, id }, true);
+    return true;
+  }
   // Cualquier nombre, escudo o partido con data-ver-* abre su ficha (desde afuera, empieza una pila nueva)
   document.addEventListener('click', (e) => {
     const b = e.target.closest('[data-ver-jug], [data-ver-club], [data-ver-partido]');
@@ -2600,7 +2641,7 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
     try { if (location.hash !== '#' + id) history.pushState(null, '', '#' + id); } catch (err) { /* marco sin historial */ }
     mostrar(id);
   });
-  const alCambiarRuta = () => { const v = rutaHash(); if ((document.getElementById(v) ? v : 'inicio') !== vistaActual) mostrar(v); };
+  const alCambiarRuta = () => { if (abrirDesdeLink()) return; const v = rutaHash(); if ((document.getElementById(v) ? v : 'inicio') !== vistaActual) mostrar(v); };
   addEventListener('hashchange', alCambiarRuta);
   addEventListener('popstate', alCambiarRuta);
 
@@ -4562,7 +4603,7 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
   $('#mas-jugadores').addEventListener('click', () => { visibles += 60; pintarJugadores(false); });
 
 
-  tapa(); clubes(); panelClub(); opcionesFecha(); pintarFecha(fechaActual); pintarMejores(); pintarGamboa(); filtroClub(); pintarJugadores(true); pintarTablas(); pintarTorneo(); pie(); iniciarJuego(); pintarQuien(false); mostrar(rutaHash(), false);
+  tapa(); clubes(); panelClub(); opcionesFecha(); pintarFecha(fechaActual); pintarMejores(); pintarGamboa(); filtroClub(); pintarJugadores(true); pintarTablas(); pintarTorneo(); pie(); iniciarJuego(); pintarQuien(false); mostrar(rutaHash(), false); abrirDesdeLink();
 })();
 </script>
 </body>
