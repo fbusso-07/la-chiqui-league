@@ -1597,7 +1597,8 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
   let periodo = 'clausura';
   const fechasOrden = D.fechas.map((f) => f.clave);
   const fechaPor = Object.fromEntries(D.fechas.map((f) => [f.clave, f]));
-  let fechaActual = D.ultima || fechasOrden[0];
+  // La fecha que se está jugando manda; si no hay ninguna, la última jugada
+  let fechaActual = (D.fechas.find((f) => f.estado === 'en juego') || {}).clave || D.ultima || fechasOrden[0];
   let tablaActual = null;
 
   // ---------- Camisetas, retratos y figuritas ----------
@@ -2617,7 +2618,7 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
   let vistaActual = null;
   function mostrar(id, arriba = true) {
     const s = id && document.getElementById(id);
-    if (!s || !s.matches('main > .seccion')) id = 'inicio';
+    if (!s || !s.matches('main > .seccion')) id = 'fecha';
     if (id !== vistaActual) {
       vistaActual = id;
       $$('main > .seccion').forEach((x) => { x.hidden = x.id !== id; });
@@ -2641,7 +2642,7 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
     try { if (location.hash !== '#' + id) history.pushState(null, '', '#' + id); } catch (err) { /* marco sin historial */ }
     mostrar(id);
   });
-  const alCambiarRuta = () => { if (abrirDesdeLink()) return; const v = rutaHash(); if ((document.getElementById(v) ? v : 'inicio') !== vistaActual) mostrar(v); };
+  const alCambiarRuta = () => { if (abrirDesdeLink()) return; const v = rutaHash(); if ((document.getElementById(v) ? v : 'fecha') !== vistaActual) mostrar(v); };
   addEventListener('hashchange', alCambiarRuta);
   addEventListener('popstate', alCambiarRuta);
 
