@@ -2630,6 +2630,7 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
     }
     if (arriba) scrollTo(0, 0);
   }
+  const hashInicial = location.hash || '';
   const rutaHash = () => { const h = decodeURIComponent((location.hash || '').slice(1)); return /^reto=/.test(h) ? 'jugar' : h.split(/[/?=~]/)[0]; };
   // Las pestañas y los links internos cambian de sección sin depender de cómo el navegador (o el marco del artefacto)
   // resuelve el "#": se anota en el historial y se muestra la sección. Atrás y adelante vuelven a la sección anterior.
@@ -4478,10 +4479,17 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
     guardado(CLAVE_QUIEN, JSON.stringify(Q));
     avisoQuien();
   }
-  // Punto en la pestaña Jugar y en la de ¿Quién es? mientras el jugador de hoy no está terminado
+  // Punto en la pestaña Jugar y en la de ¿Quién es? cuando hay un jugador nuevo para adivinar hoy: se va apenas abrís
+  // esa sección (o si ya lo terminaste), como cualquier aviso de app
   function avisoQuien() {
-    const h = quienEstado().dias[hoyAR()];
-    $$('[data-aviso-quien]').forEach((x) => { x.hidden = !!(h && h.fin); });
+    const hoy = hoyAR(), h = quienEstado().dias[hoy], visto = leerJSON('chiqui-avisos', {});
+    const antes = JSON.stringify(visto);
+    if (vistaActual === 'jugar' || vistaActual === 'quien') visto.jugar = hoy;
+    if (vistaActual === 'quien') visto.quien = hoy;
+    if (JSON.stringify(visto) !== antes) guardado('chiqui-avisos', JSON.stringify(visto));
+    const pendiente = !(h && h.fin);
+    $$('.indice [data-aviso-quien]').forEach((x) => { x.hidden = !pendiente || visto.jugar === hoy; });
+    $$('.subnav [data-aviso-quien]').forEach((x) => { x.hidden = !pendiente || visto.quien === hoy; });
   }
   // Racha de días, como en Wordle: el día cuenta si terminaste el desafío de la Copa o jugaste ¿Quién es? (días de Argentina)
   function diaAntes(dia) { const t = new Date(dia + 'T12:00:00Z'); t.setUTCDate(t.getUTCDate() - 1); return t.toISOString().slice(0, 10); }
@@ -4604,7 +4612,7 @@ button, summary, .indice a, .subnav a, .caja-ver, .juego-ini, .promo-juego, .seg
   $('#mas-jugadores').addEventListener('click', () => { visibles += 60; pintarJugadores(false); });
 
 
-  tapa(); clubes(); panelClub(); opcionesFecha(); pintarFecha(fechaActual); pintarMejores(); pintarGamboa(); filtroClub(); pintarJugadores(true); pintarTablas(); pintarTorneo(); pie(); iniciarJuego(); pintarQuien(false); mostrar(rutaHash(), false); abrirDesdeLink();
+  tapa(); clubes(); panelClub(); opcionesFecha(); pintarFecha(fechaActual); pintarMejores(); pintarGamboa(); filtroClub(); pintarJugadores(true); pintarTablas(); pintarTorneo(); pie(); iniciarJuego(); pintarQuien(false); if (instalada() && hashInicial === '#jugar') { try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* sin historial */ } } mostrar(rutaHash(), false); abrirDesdeLink();
 })();
 </script>
 </body>

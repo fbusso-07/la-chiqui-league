@@ -3,7 +3,7 @@
   "short_name": "Chiqui League",
   "description": "La Liga Profesional en figuritas y la Copa Chiqui: armá tu once con figuritas o con leyendas y ganá siete partidos seguidos.",
   "lang": "es-AR",
-  "start_url": "./#jugar",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
