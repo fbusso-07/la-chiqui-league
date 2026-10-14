@@ -63,6 +63,8 @@ a.marcador:hover { background: var(--sello); }
 .lista { margin: 0; padding: 0; list-style: none; }
 .lista li { padding: 7px 0; border-top: 1px solid var(--papel-2); }
 .lista li:first-child { border-top: 0; }
+.pasos { max-width: 62ch; margin: 8px 0 0; padding-left: 1.4em; }
+.pasos li { padding: 4px 0; }
 .dato { color: var(--tinta-2); font-size: .875rem; }
 .dorsal { display: inline-block; min-width: 2.2ch; margin-right: 6px; font-family: var(--display); font-weight: 900; color: var(--tinta-2); text-align: right; font-variant-numeric: tabular-nums; }
 .texto { max-width: 70ch; margin: 4px 0 0; color: var(--tinta-2); }
