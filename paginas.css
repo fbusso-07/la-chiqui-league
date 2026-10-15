@@ -22,6 +22,7 @@ main { padding-block: 22px 48px; }
 h1 { margin: 0; font-family: var(--display); font-weight: 900; font-stretch: 86%; font-size: clamp(2rem, 5vw, 2.8rem); line-height: 1.02; letter-spacing: -.01em; text-wrap: balance; }
 h2 { margin: 36px 0 10px; font-family: var(--display); font-style: italic; font-weight: 900; font-stretch: 118%; font-size: 1.5625rem; line-height: 1.1; text-transform: uppercase; }
 h3 { margin: 22px 0 8px; font-family: var(--display); font-weight: 850; font-stretch: 86%; font-size: 1.25rem; }
+h4 { margin: 14px 0 4px; font-family: var(--display); font-weight: 850; font-stretch: 86%; font-size: 1rem; }
 .sub { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; margin: 10px 0 0; color: var(--tinta-2); }
 .sub a { font-weight: 700; color: var(--tinta); }
 .lead { max-width: 62ch; margin: 16px 0 0; font-size: 1.0625rem; }
