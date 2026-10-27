@@ -15,7 +15,6 @@
   <url><loc>https://lachiquileague.pages.dev/mejores-defensas/</loc></url>
   <url><loc>https://lachiquileague.pages.dev/partidos-de-hoy/</loc></url>
   <url><loc>https://lachiquileague.pages.dev/penales/</loc></url>
-  <url><loc>https://lachiquileague.pages.dev/playoffs/</loc></url>
   <url><loc>https://lachiquileague.pages.dev/promedios/</loc></url>
   <url><loc>https://lachiquileague.pages.dev/proxima-fecha/</loc></url>
   <url><loc>https://lachiquileague.pages.dev/quien-es/</loc></url>
@@ -193,6 +192,7 @@
   <url><loc>https://lachiquileague.pages.dev/jugadores/benjamin-bosch/</loc></url>
   <url><loc>https://lachiquileague.pages.dev/jugadores/benjamin-moyano/</loc></url>
   <url><loc>https://lachiquileague.pages.dev/jugadores/benjamin-perez/</loc></url>
+  <url><loc>https://lachiquileague.pages.dev/jugadores/benjamin-sagues/</loc></url>
   <url><loc>https://lachiquileague.pages.dev/jugadores/blas-armoa/</loc></url>
   <url><loc>https://lachiquileague.pages.dev/jugadores/blas-benedetto/</loc></url>
   <url><loc>https://lachiquileague.pages.dev/jugadores/blas-palavecino/</loc></url>
@@ -506,6 +506,7 @@
   <url><loc>https://lachiquileague.pages.dev/jugadores/ignacio-fernandez/</loc></url>
   <url><loc>https://lachiquileague.pages.dev/jugadores/ignacio-galvan/</loc></url>
   <url><loc>https://lachiquileague.pages.dev/jugadores/ignacio-gariglio/</loc></url>
+  <url><loc>https://lachiquileague.pages.dev/jugadores/ignacio-isla/</loc></url>
   <url><loc>https://lachiquileague.pages.dev/jugadores/ignacio-miramon/</loc></url>
   <url><loc>https://lachiquileague.pages.dev/jugadores/ignacio-nahuel-santillan/</loc></url>
   <url><loc>https://lachiquileague.pages.dev/jugadores/ignacio-ovando/</loc></url>
@@ -1440,6 +1441,7 @@
   <url><loc>https://lachiquileague.pages.dev/fechas/clausura-14/san-lorenzo-newell-s/</loc></url>
   <url><loc>https://lachiquileague.pages.dev/fechas/clausura-14/talleres-defensa-y-justicia/</loc></url>
   <url><loc>https://lachiquileague.pages.dev/fechas/clausura-14/tigre-atletico-tucuman/</loc></url>
+  <url><loc>https://lachiquileague.pages.dev/fechas/clausura-14/union-estudiantes/</loc></url>
   <url><loc>https://lachiquileague.pages.dev/fechas/clausura-2/argentinos-estudiantes-rc/</loc></url>
   <url><loc>https://lachiquileague.pages.dev/fechas/clausura-2/banfield-sarmiento/</loc></url>
   <url><loc>https://lachiquileague.pages.dev/fechas/clausura-2/barracas-central-aldosivi/</loc></url>
